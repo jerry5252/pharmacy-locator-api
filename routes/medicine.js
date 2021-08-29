@@ -34,7 +34,6 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/search", async (req, res) => {
-  console.log(req.query);
   try {
     const medicines = await Medicine.find({
       medName: { $regex: req.query.q, $options: "i" }, // use query as regular expression to search

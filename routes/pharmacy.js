@@ -33,7 +33,6 @@ router.get("/show", async (req, res) => {
 
 router.get("/:id/meds", async (req, res) => {
   try {
-    console.log(req.params.id);
     const meds = await Medicine.find({ pharmacy: req.params.id });
     return res.send(meds);
   } catch (error) {
