@@ -62,15 +62,15 @@ const pharmacy = new mongoose.Schema({
   },
 });
 
-pharmacy.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-});
+// pharmacy.pre("save", async function (next) {
+//   if (this.isModified("password")) {
+//     this.password = await bcrypt.hash(this.password, 10);
+//   }
+// });
 
-pharmacy.methods.hasPassword = async function (candidate) {
-  return bcrypt.compare(candidate, this.password);
-};
+// pharmacy.methods.hasPassword = async function (candidate) {
+//   return bcrypt.compare(candidate, this.password);
+// };
 
 //populate or virtual populate
 
