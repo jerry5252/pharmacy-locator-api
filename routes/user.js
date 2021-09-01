@@ -42,9 +42,9 @@ router.post("/sign-in", async (req, res) => {
   const pharmacy = await pharmacyCopy.findOne({
     userName: req.body.userName,
   });
-  console.log("id:", pharmacy._id);
+  console.log("id:", pharmacy);
   const id = pharmacy._id;
-  if (pharmacy.length < 1) {
+  if (pharmacy === null) {
     return res.status(400).send("user name or password not correct");
   }
 
@@ -54,18 +54,17 @@ router.post("/sign-in", async (req, res) => {
   );
   if (validPassword) {
     console.log(pharmacy._id.toString());
-    return res.status(400).send(id);
+    return res.send(id);
     // const token = jwt.sign(
     //   {
     //     id: admin._id.toString(),
-    //     role: admin.role,
     //   },
     //   process.env.JWT_SECRET
     // );
 
-    //     res.cookie("auth", token).send(token);
-    //     console.log(req.cookies);
-    //     // res.status(200).send(admin);
+    // res.cookie("auth", token).send(token);
+    // console.log(req.cookies);
+    // // res.status(200).send(admin);
   } else {
     res.status(500).send("user name or password not correct after");
   }
