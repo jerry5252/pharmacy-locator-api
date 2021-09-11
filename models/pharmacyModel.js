@@ -1,6 +1,19 @@
 const mongoose = require("mongoose");
 const medicineCopy = require("./medicineModel");
 const bcrypt = require("bcrypt");
+
+const GeoSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    default: "Point",
+  },
+  coordinates: {
+    type: [Number],
+    index: "2dsphere",
+    required: true,
+  },
+});
+
 const pharmacy = new mongoose.Schema({
   pharmacyName: {
     type: String,
@@ -18,12 +31,8 @@ const pharmacy = new mongoose.Schema({
   },
   pharmacyType: {
     type: String,
-    required: true,
   },
-  location: {
-    type: String,
-    required: true,
-  },
+  location: GeoSchema,
   openingHr: {
     type: Number,
     required: true,
@@ -62,16 +71,14 @@ const pharmacy = new mongoose.Schema({
   },
 });
 
-pharmacy.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    this.password = await bcrypt.hash(this.password, 10);
-  }
-});
+// pharmacy.pre("save", async function (next) {
+//   if (this.isModified("password")) {
+//     this.password = await bcrypt.hash(this.password, 10);
+//   }
+// });
 
-pharmacy.methods.hasPassword = async function (candidate) {
-  return bcrypt.compare(candidate, this.password);
-};
-
-//populate or virtual populate
+// pharmacy.methods.hasPassword = async function (candidate) {
+//   return bcrypt.compare(candidate, this.password);
+// };
 
 module.exports = mongoose.model("pharmacyTable", pharmacy);

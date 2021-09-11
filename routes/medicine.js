@@ -80,4 +80,14 @@ router.delete("/delete/:id", (req, res, next) => {
   });
 });
 
+router.get("/pharmaMeds/:id", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ pharmacy: req.params.id });
+    console.log(medicines);
+    res.send(medicines);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
 module.exports = router;

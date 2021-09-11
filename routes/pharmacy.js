@@ -79,4 +79,22 @@ router.put("/update/:id", async (req, res, next) => {
   );
 });
 
+//router.get("/nearest")
+router.get("/nearest", function (req, res, next) {
+  Pharmacy.aggregate()
+    .near({
+      near: {
+        type: "point",
+        coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
+      },
+      maxDistance: 1000, // in 10k meters
+      spherical: true,
+      distanceField: "dist.calculated",
+    })
+    .then(function (pharmacies) {
+      console.log(pharmacies);
+      res.send(pharmacies);
+    });
+});
+
 module.exports = router;
