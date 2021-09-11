@@ -47,5 +47,5 @@ router.get("/search", async (req, res) => {
   }
 });
 
-router.post("/showMed", (req, res) => {});
+router.post("/showMed", (req, res) => { });
 module.exports = router;
