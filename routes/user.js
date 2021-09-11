@@ -42,13 +42,16 @@ router.post("/sign-in", async (req, res) => {
   const pharmacy = await pharmacyCopy.findOne({
     userName: req.body.userName,
   });
-  // console.log("id:", pharmacy._id);
+  //console.log("id:", pharmacy._id);
   const id = pharmacy._id;
   if (pharmacy.length < 1) {
     return res.status(400).send("user name or password not correct");
   }
 
-  const validPassword = await bcrypt.compare(req.body.password, pharmacy.password)
+  const validPassword = await bcrypt.compare(
+    req.body.password,
+    pharmacy.password
+  );
   if (validPassword) {
     console.log(pharmacy._id.toString());
     return res.status(200).send(id);
@@ -67,5 +70,4 @@ router.post("/sign-in", async (req, res) => {
     res.status(500).send("user name or password not correct after");
   }
 });
-
 module.exports = router;

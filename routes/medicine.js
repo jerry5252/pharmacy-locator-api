@@ -48,4 +48,47 @@ router.get("/search", async (req, res) => {
 });
 
 router.post("/showMed", (req, res) => { });
+//UPADTE MEDICINE
+router.put("/update/:id", async (req, res, next) => {
+  await Medicine.findByIdAndUpdate(
+    req.params.id,
+    {
+      $set: req.body,
+    },
+    { new: true },
+    (error, data) => {
+      if (error) {
+        console.log(error);
+        return next(error);
+      } else {
+        res.json(data);
+        console.log("Medicine updated successfully !");
+      }
+    }
+  );
+});
+
+// DELETE MEDICINE
+router.delete("/delete/:id", (req, res, next) => {
+  Medicine.findByIdAndRemove(req.params.id, (error, data) => {
+    if (error) {
+      return next(error);
+    } else {
+      res.status(200).json({
+        msg: data,
+      });
+    }
+  });
+});
+
+router.get("/pharmaMeds/:id", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ pharmacy: req.params.id });
+    console.log(medicines);
+    res.send(medicines);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
 module.exports = router;
