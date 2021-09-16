@@ -103,6 +103,7 @@ router.get("/search", async (req, res) => {
 //     });
 // });
 
+router.post("/showMed", (req, res) => {});
 //UPADTE MEDICINE
 router.put("/update/:id", async (req, res, next) => {
   await Medicine.findByIdAndUpdate(

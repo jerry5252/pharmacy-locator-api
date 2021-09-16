@@ -13,8 +13,10 @@ const medicine = new mongoose.Schema({
     index: true,
   },
   medType: {
-    type: Number,
+    type: String,
+    enum: ['Prescriped Only', 'Prenatal', 'Antibiotics', 'Others'],
     required: true,
+
   },
   medPrice: {
     type: Number,
