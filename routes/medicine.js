@@ -33,19 +33,75 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Customer searching for a medicine
 router.get("/search", async (req, res) => {
+  const pharmacyResults = [];
   try {
     const medicines = await Medicine.find({
       medName: { $regex: req.query.q, $options: "i" }, // use query as regular expression to search
     })
       .sort("medName")
       .populate("pharmacy");
-    return res.send(medicines);
+    for (i = 0; i < medicines.length; i++) {
+      pharmacyResults[i] = medicines[i].pharmacy;
+      //console.log(medicines[i].pharmacy);
+    }
+    const pharmasClose = await pharmacyCopy.aggregate().near({
+      near: {
+        type: "Point",
+        coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
+      },
+      maxDistance: 1000, // in 1k meters
+      spherical: true,
+      distanceField: "dist.calculated",
+    });
+
+    // .then((pharmas) => {
+    //   console.log(pharmas);
+    //   return res.sendStatus(200);
+    // });
+    // const pharmasWithMed = pharmasClose.filter((pharma) =>
+    //   pharmacyResults.find((ph) => ph._id == pharma._id)
+    // );
+    // const filtered = pharmasClose.filter((pc) => {
+    //   const pred = pharmacyResults.findIndex((ph) => ph._id === pc._id) != -1;
+    //   console.log(pred);
+    //   return pred;
+    // });
+
+    const pharmasWithMed = [];
+    for (i = 0; i < pharmacyResults.length; i++) {
+      for (j = 0; j < pharmasClose.length; j++) {
+        if (pharmacyResults[i].pharmaName === pharmasClose[j].pharmaName) {
+          pharmasWithMed[i] = pharmacyResults[i];
+        }
+      }
+    }
+    console.log(pharmasWithMed);
+
+    res.send(pharmasWithMed);
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);
   }
 });
+
+// router.get("/nearest", function (req, res, next) {
+//   Pharmacy.aggregate()
+//     .near({
+//       near: {
+//         type: "point",
+//         coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
+//       },
+//       maxDistance: 1000, // in 1k meters
+//       spherical: true,
+//       distanceField: "dist.calculated",
+//     })
+//     .then(function (pharmacies) {
+//       console.log(pharmacies);
+//       res.send(pharmacies);
+//     });
+// });
 
 //UPADTE MEDICINE
 router.put("/update/:id", async (req, res, next) => {
@@ -80,6 +136,7 @@ router.delete("/delete/:id", (req, res, next) => {
   });
 });
 
+//get medicines of a certain pharmacy
 router.get("/pharmaMeds/:id", async (req, res) => {
   try {
     const medicines = await Medicine.find({ pharmacy: req.params.id });

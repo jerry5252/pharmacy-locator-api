@@ -31,10 +31,35 @@ router.get("/show", async (req, res) => {
   res.send(pharmacies);
 });
 
+router.get("/medPrice", async (req, res) => {
+  const pharmacies = await Medicine.find({ medPrice: {} })
+    // res.sort(pharmacies)
+    .sort("medPrice")
+    .populate("pharmacy");
+});
+
 router.get("/pharmacyType", async (req, res) => {
   try {
     const pharmacies = await Pharmacy.find({ pharmacyType: "Kenema" });
     res.send(pharmacies);
+    try {
+      Pharmacy.aggregate()
+        .near({
+          near: {
+            type: "point",
+            coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
+          },
+          maxDistance: 10000, // in 10k meters
+          spherical: true,
+          distanceField: "dist.calculated",
+        })
+        .then(function (pharmacies) {
+          console.log(pharmacies);
+          res.send(pharmacies);
+        });
+    } catch (err) {
+      res.status(500).json("wrongggggg");
+    }
     // try {
     //   if (pharmacies.pharmacyType == "Kenema") {
     //     res.status(200).json(pharmacies);
@@ -79,6 +104,26 @@ router.put("/update/:id", async (req, res, next) => {
   );
 });
 
+//update pharmacy 2
+router.put("/:id", async (req, res) => {
+  // if(req.body.userId === req.params.id){
+  //   if(req.body.password){
+  //     const salt = await bcryptgenSalt(10)
+  //   }
+  // }
+  try {
+    const updatedUser = await Pharmacy.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 //router.get("/nearest")
 router.get("/nearest", function (req, res, next) {
   Pharmacy.aggregate()
@@ -87,14 +132,31 @@ router.get("/nearest", function (req, res, next) {
         type: "point",
         coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
       },
-      maxDistance: 1000, // in 10k meters
+      maxDistance: 1000, // in 1k meters
       spherical: true,
       distanceField: "dist.calculated",
     })
     .then(function (pharmacies) {
-      console.log(pharmacies);
+      //console.log(pharmacies);
       res.send(pharmacies);
     });
 });
+
+// router.get("/nearest", function (req, res, next) {
+//   Pharmacy.aggregate()
+//     .near({
+//       near: {
+//         type: "point",
+//         coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
+//       },
+//       maxDistance: 1000, // in 1k meters
+//       spherical: true,
+//       distanceField: "dist.calculated",
+//     })
+//     .then(function (pharmacies) {
+//       //console.log(pharmacies);
+//       res.send(pharmacies);
+//     });
+// });
 
 module.exports = router;

@@ -69,6 +69,10 @@ const pharmacy = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  profilePic: {
+    type: String,
+    default: "",
+  },
 });
 
 // pharmacy.pre("save", async function (next) {
