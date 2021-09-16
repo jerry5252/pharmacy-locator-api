@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const search = new mongoose.Schema({
-    Name: {
+    name: {
         type: String,
         required: true,
     },
-    Count: {
+    count: {
         type: Number,
-        required: true,
+        default: 0
     }
 });
 
