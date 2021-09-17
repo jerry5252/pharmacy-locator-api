@@ -33,6 +33,20 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/searchMed", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({
+      medName: { $regex: req.query.q, $options: "i" }, // use query as regular expression to search
+    })
+      .sort("medName")
+      .populate("pharmacy");
+    res.send(medicines);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+});
+
 //Customer searching for a medicine
 router.get("/search", async (req, res) => {
   const pharmacyResults = [];
@@ -56,19 +70,6 @@ router.get("/search", async (req, res) => {
       distanceField: "dist.calculated",
     });
 
-    // .then((pharmas) => {
-    //   console.log(pharmas);
-    //   return res.sendStatus(200);
-    // });
-    // const pharmasWithMed = pharmasClose.filter((pharma) =>
-    //   pharmacyResults.find((ph) => ph._id == pharma._id)
-    // );
-    // const filtered = pharmasClose.filter((pc) => {
-    //   const pred = pharmacyResults.findIndex((ph) => ph._id === pc._id) != -1;
-    //   console.log(pred);
-    //   return pred;
-    // });
-
     const pharmasWithMed = [];
     for (i = 0; i < pharmacyResults.length; i++) {
       for (j = 0; j < pharmasClose.length; j++) {
@@ -78,8 +79,8 @@ router.get("/search", async (req, res) => {
       }
     }
     console.log(pharmasWithMed);
-
     res.send(pharmasWithMed);
+    res.send(medicines);
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);

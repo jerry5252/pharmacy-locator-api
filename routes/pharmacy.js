@@ -126,6 +126,7 @@ router.put("/:id", async (req, res) => {
 });
 //router.get("/nearest")
 router.get("/nearest", function (req, res, next) {
+  console.log(req.query);
   Pharmacy.aggregate()
     .near({
       near: {
@@ -138,25 +139,35 @@ router.get("/nearest", function (req, res, next) {
     })
     .then(function (pharmacies) {
       //console.log(pharmacies);
-      res.send(pharmacies);
+      // console.log("===========================", pharmacies);
+      // var data = {};
+      // data.features = pharmacies;
+      // // console.log("data: ", data);
+      // var mainData = {};
+      // mainData.features = [];
+      // for (var i = 0; i < data.features.length; i++) {
+      //   var tmp = {};
+      //   tmp.type = "Feature";
+      //   tmp.properties = {};
+      //   tmp.properties.pharmacy_id = data.features[i]._id;
+      //   tmp.properties.pharmacyName = data.features[i].pharmacyName;
+      //   tmp.properties.phoneNumber = data.features[i].phoneNumber;
+      //   tmp.properties.openingHr = data.features[i].openingHr;
+      //   tmp.properties.closingHr = data.features[i].closingHr;
+      //   tmp.properties.email = data.features[i].email;
+      //   tmp.properties.description = "Advil";
+      //   // location
+      //   var geometry = {};
+      //   geometry.type = "Point";
+      //   geometry.coordinates = data.features[i].location.coordinates;
+      //   tmp.geometry = geometry;
+      //   // mainData.push(tmp);
+      //   mainData.features.push(tmp);
+      // }
+
+      console.log(pharmacies);
+      res.status(200).json(pharmacies);
     });
 });
-
-// router.get("/nearest", function (req, res, next) {
-//   Pharmacy.aggregate()
-//     .near({
-//       near: {
-//         type: "point",
-//         coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
-//       },
-//       maxDistance: 1000, // in 1k meters
-//       spherical: true,
-//       distanceField: "dist.calculated",
-//     })
-//     .then(function (pharmacies) {
-//       //console.log(pharmacies);
-//       res.send(pharmacies);
-//     });
-// });
 
 module.exports = router;
