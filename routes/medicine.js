@@ -138,6 +138,30 @@ router.delete("/delete/:id", (req, res, next) => {
   });
 });
 
+router.get("/medType/Prenatal", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ medType: "Prenatal" });
+    res.send(medicines);
+  } catch (err) {
+    res.status(500).json("wrongggggg");
+  }
+});
+router.get("/medType/Others", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ medType: "Others" });
+    res.send(medicines);
+  } catch (err) {
+    res.status(500).json("wrongggggg");
+  }
+});
+router.get("/medType/PrescribedOnly", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ medType: "Prescriped Only" });
+    res.send(medicines);
+  } catch (err) {
+    res.status(500).json("wrongggggg");
+  }
+});
 //get medicines of a certain pharmacy
 router.get("/pharmaMeds/:id", async (req, res) => {
   try {
@@ -149,4 +173,6 @@ router.get("/pharmaMeds/:id", async (req, res) => {
     res.sendStatus(500);
   }
 });
+//filter by type
+router.get("/medType", async (req, res) => {});
 module.exports = router;
