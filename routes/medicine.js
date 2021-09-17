@@ -46,40 +46,29 @@ router.get("/search", async (req, res) => {
       pharmacyResults[i] = medicines[i].pharmacy;
       //console.log(medicines[i].pharmacy);
     }
-    const pharmasClose = await pharmacyCopy.aggregate().near({
-      near: {
-        type: "Point",
-        coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
-      },
-      maxDistance: 1000, // in 1k meters
-      spherical: true,
-      distanceField: "dist.calculated",
-    });
-
-    // .then((pharmas) => {
-    //   console.log(pharmas);
-    //   return res.sendStatus(200);
-    // });
-    // const pharmasWithMed = pharmasClose.filter((pharma) =>
-    //   pharmacyResults.find((ph) => ph._id == pharma._id)
-    // );
-    // const filtered = pharmasClose.filter((pc) => {
-    //   const pred = pharmacyResults.findIndex((ph) => ph._id === pc._id) != -1;
-    //   console.log(pred);
-    //   return pred;
+    // const pharmasClose = await pharmacyCopy.aggregate().near({
+    //   near: {
+    //     type: "Point",
+    //     coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)],
+    //   },
+    //   maxDistance: 1000, // in 1k meters
+    //   spherical: true,
+    //   distanceField: "dist.calculated",
     // });
 
-    const pharmasWithMed = [];
-    for (i = 0; i < pharmacyResults.length; i++) {
-      for (j = 0; j < pharmasClose.length; j++) {
-        if (pharmacyResults[i].pharmaName === pharmasClose[j].pharmaName) {
-          pharmasWithMed[i] = pharmacyResults[i];
-        }
-      }
-    }
-    console.log(pharmasWithMed);
+    // const pharmasWithMed = [];
+    // for (i = 0; i < pharmacyResults.length; i++) {
+    //   for (j = 0; j < pharmasClose.length; j++) {
+    //     if (pharmacyResults[i].pharmaName === pharmasClose[j].pharmaName) {
+    //       pharmasWithMed[i] = pharmacyResults[i];
+    //     }
+    //   }
+    // }
+    // console.log(pharmasWithMed);
 
-    res.send(pharmasWithMed);
+    // res.send(pharmasWithMed);
+
+    res.send(medicines);
   } catch (error) {
     console.log(error);
     return res.sendStatus(500);
@@ -103,7 +92,7 @@ router.get("/search", async (req, res) => {
 //     });
 // });
 
-router.post("/showMed", (req, res) => {});
+router.post("/showMed", (req, res) => { });
 //UPADTE MEDICINE
 router.put("/update/:id", async (req, res, next) => {
   await Medicine.findByIdAndUpdate(
@@ -137,6 +126,34 @@ router.delete("/delete/:id", (req, res, next) => {
   });
 });
 
+
+router.get("/medType/Prenatal", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ medType: "Prenatal" });
+    res.send(medicines);
+
+  } catch (err) {
+    res.status(500).json("wrongggggg");
+  }
+});
+router.get("/medType/Others", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ medType: "Others" });
+    res.send(medicines);
+
+  } catch (err) {
+    res.status(500).json("wrongggggg");
+  }
+});
+router.get("/medType/PrescribedOnly", async (req, res) => {
+  try {
+    const medicines = await Medicine.find({ medType: "Prescriped Only" });
+    res.send(medicines);
+
+  } catch (err) {
+    res.status(500).json("wrongggggg");
+  }
+});
 //get medicines of a certain pharmacy
 router.get("/pharmaMeds/:id", async (req, res) => {
   try {
@@ -148,4 +165,8 @@ router.get("/pharmaMeds/:id", async (req, res) => {
     res.sendStatus(500);
   }
 });
+//filter by type
+router.get("/medType", async (req, res) => {
+
+})
 module.exports = router;

@@ -26,17 +26,23 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/show/:id", async (req, res) => {
+  const pharmacies = await Pharmacy.findOne({ _id: req.params.id });
+  // for (i=0; i<pharmacies.length; i++){
+  //   if()
+  // }
+  console.log(pharmacies);
+  res.send(pharmacies);
+});
+router.put("/update/:id", async (req, res) => {
+
+});
 router.get("/show", async (req, res) => {
   const pharmacies = await Pharmacy.find();
   res.send(pharmacies);
 });
 
-router.get("/medPrice", async (req, res) => {
-  const pharmacies = await Medicine.find({ medPrice: {} })
-    // res.sort(pharmacies)
-    .sort("medPrice")
-    .populate("pharmacy");
-});
+
 
 router.get("/pharmacyType", async (req, res) => {
   try {
@@ -69,6 +75,15 @@ router.get("/pharmacyType", async (req, res) => {
     // } catch (err) {
     //   res.status(300).json(err);
     // }
+  } catch (err) {
+    res.status(500).json("wrongggggg");
+  }
+});
+router.get("/pharmacyType/Kenema", async (req, res) => {
+  try {
+    const pharmacies = await Pharmacy.find({ pharmacyType: "Kenema" });
+    res.send(pharmacies);
+
   } catch (err) {
     res.status(500).json("wrongggggg");
   }
@@ -106,11 +121,11 @@ router.put("/update/:id", async (req, res, next) => {
 
 //update pharmacy 2
 router.put("/:id", async (req, res) => {
-  // if(req.body.userId === req.params.id){
-  //   if(req.body.password){
-  //     const salt = await bcryptgenSalt(10)
-  //   }
-  // }
+  if (req.body.userId === req.params.id) {
+    if (req.body.password) {
+      const salt = await bcryptgenSalt(10)
+    }
+  }
   try {
     const updatedUser = await Pharmacy.findByIdAndUpdate(
       req.params.id,

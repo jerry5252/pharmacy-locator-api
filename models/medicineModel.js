@@ -14,7 +14,7 @@ const medicine = new mongoose.Schema({
   },
   medType: {
     type: String,
-    enum: ['Prescriped Only', 'Prenatal', 'Antibiotics', 'Others'],
+    enum: ['Prescribed Only', 'Prenatal', 'Antibiotics', 'Others'],
     required: true,
 
   },
